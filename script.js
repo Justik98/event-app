@@ -9,6 +9,7 @@ const eventCounter = document.querySelector("#event-counter");
 const feedback = document.querySelector("#feedback");
 
 let events = [];
+let editingEventId = null;
 
 bootstrap();
 registerServiceWorker();
@@ -77,9 +78,41 @@ eventList.addEventListener("click", async (event) => {
     return;
   }
 
+  if (action === "start-edit") {
+    editingEventId = id;
+    renderEvents();
+    return;
+  }
+
+  if (action === "cancel-edit") {
+    editingEventId = null;
+    renderEvents();
+    setFeedback("Modifica annullata.", "info");
+    return;
+  }
+
   if (action === "delete") {
     await deleteEvent(id);
   }
+});
+
+eventList.addEventListener("submit", async (event) => {
+  const editForm = event.target.closest("form[data-role='edit-event']");
+
+  if (!editForm) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const formData = new FormData(editForm);
+  const id = editForm.dataset.id;
+
+  await saveEventEdit(id, {
+    title: String(formData.get("title") || "").trim(),
+    description: String(formData.get("description") || "").trim(),
+    date: String(formData.get("date") || "").trim(),
+  });
 });
 
 async function bootstrap() {
@@ -133,6 +166,35 @@ function renderEvents() {
             formatCreatedAt(item.completedAt)
           )}</p>`
         : "";
+    const isEditing = editingEventId === item.id;
+    const editMarkup = isEditing
+      ? `
+        <form class="edit-event-form" data-role="edit-event" data-id="${escapeHtml(item.id)}">
+          <label>
+            Titolo
+            <input name="title" type="text" value="${escapeHtml(item.title)}" required />
+          </label>
+          <label>
+            Descrizione
+            <textarea name="description" rows="3" required>${escapeHtml(item.description)}</textarea>
+          </label>
+          <label>
+            Data e ora opzionali
+            <input
+              name="date"
+              type="datetime-local"
+              value="${escapeHtml(toDateTimeLocalValue(scheduledAt))}"
+            />
+          </label>
+          <div class="edit-event-actions">
+            <button type="submit" class="card-action card-action-primary">Salva modifiche</button>
+            <button type="button" class="card-action" data-action="cancel-edit" data-id="${escapeHtml(
+              item.id
+            )}">Annulla</button>
+          </div>
+        </form>
+      `
+      : "";
 
     listItem.innerHTML = `
       <div class="event-meta">
@@ -144,6 +206,14 @@ function renderEvents() {
           </div>
         </div>
         <div class="event-actions">
+          <button
+            type="button"
+            class="card-action"
+            data-action="start-edit"
+            data-id="${escapeHtml(item.id)}"
+          >
+            Modifica
+          </button>
           <button
             type="button"
             class="card-action"
@@ -166,6 +236,7 @@ function renderEvents() {
       <p class="event-description">${escapeHtml(item.description)}</p>
       <p class="event-created-at">Creato il ${escapeHtml(formatCreatedAt(item.createdAt))}</p>
       ${completedMarkup}
+      ${editMarkup}
     `;
 
     eventList.appendChild(listItem);
@@ -203,6 +274,14 @@ function formatCreatedAt(dateValue) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(dateValue));
+}
+
+function toDateTimeLocalValue(value) {
+  if (!value) {
+    return "";
+  }
+
+  return value.length === 10 ? `${value}T12:00` : value;
 }
 
 function escapeHtml(value) {
@@ -246,6 +325,7 @@ async function updateEventStatus(id, completed) {
     }
 
     events = payload.events;
+    editingEventId = null;
     renderEvents();
     setFeedback(completed ? "Attivita' segnata come fatta." : "Attivita' riaperta.", "success");
   } catch (error) {
@@ -267,9 +347,45 @@ async function deleteEvent(id) {
     }
 
     events = payload.events;
+    editingEventId = null;
     renderEvents();
     setFeedback("Attivita' eliminata.", "success");
   } catch (error) {
     setFeedback(error.message || "Errore durante l'eliminazione.", "error");
+  }
+}
+
+async function saveEventEdit(id, values) {
+  if (!values.title || !values.description) {
+    setFeedback("Titolo e descrizione sono obbligatori.", "error");
+    return;
+  }
+
+  setFeedback("Salvataggio modifiche...", "info");
+
+  try {
+    const response = await fetch(`/api/events/${encodeURIComponent(id)}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: values.title,
+        description: values.description,
+        date: values.date || null,
+      }),
+    });
+    const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(payload.error || "Modifica non riuscita.");
+    }
+
+    events = payload.events;
+    editingEventId = null;
+    renderEvents();
+    setFeedback("Evento modificato correttamente.", "success");
+  } catch (error) {
+    setFeedback(error.message || "Errore durante la modifica.", "error");
   }
 }

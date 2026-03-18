@@ -320,6 +320,12 @@ body {
   cursor: pointer;
 }
 
+.card-action-primary {
+  color: #fffaf5;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+}
+
 .card-action-danger {
   color: #8b2c2c;
   border-color: rgba(139, 44, 44, 0.18);
@@ -351,6 +357,40 @@ body {
 .event-card.is-completed .event-description,
 .event-card.is-completed h3 {
   opacity: 0.72;
+}
+
+.edit-event-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(92, 70, 52, 0.12);
+}
+
+.edit-event-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.edit-event-form input,
+.edit-event-form textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(92, 70, 52, 0.18);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--panel-strong);
+}
+
+.edit-event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 @media (max-width: 720px) {
@@ -395,6 +435,10 @@ body {
 
   .card-action {
     flex: 1 1 180px;
+  }
+
+  .edit-event-actions .card-action {
+    flex: 1 1 160px;
   }
 }
 

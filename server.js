@@ -92,6 +92,42 @@ const server = http.createServer(async (request, response) => {
       return sendJson(response, 200, { events });
     }
 
+    if (eventIdMatch && request.method === "PUT") {
+      const body = await readJsonBody(request);
+      const eventId = decodeURIComponent(eventIdMatch[1]);
+      const title = typeof body.title === "string" ? body.title.trim() : "";
+      const description =
+        typeof body.description === "string" ? body.description.trim() : "";
+      const scheduledAt = normalizeScheduledAt(body.date);
+
+      if (!title || !description) {
+        return sendJson(response, 400, {
+          error: "Titolo e descrizione sono obbligatori.",
+        });
+      }
+
+      const events = await updateEvents((currentEvents) => {
+        const nextEvents = purgeExpiredEvents(currentEvents);
+        const eventIndex = nextEvents.findIndex((item) => item.id === eventId);
+
+        if (eventIndex === -1) {
+          throw new Error("NOT_FOUND");
+        }
+
+        const currentEvent = nextEvents[eventIndex];
+        nextEvents[eventIndex] = {
+          ...currentEvent,
+          title,
+          description,
+          scheduledAt,
+        };
+
+        return nextEvents;
+      });
+
+      return sendJson(response, 200, { events });
+    }
+
     if (eventIdMatch && request.method === "DELETE") {
       const eventId = decodeURIComponent(eventIdMatch[1]);
 
