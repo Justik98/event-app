@@ -1,0 +1,10 @@
+{
+  "name": "eventi-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini app eventi con backend Node e salvataggio JSON",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
