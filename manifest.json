@@ -1,0 +1,24 @@
+{
+  "name": "Gestione Eventi",
+  "short_name": "Eventi",
+  "description": "App semplice per creare e consultare eventi condivisi.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4efe7",
+  "theme_color": "#c96f3b",
+  "lang": "it-IT",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
