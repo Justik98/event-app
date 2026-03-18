@@ -24,10 +24,7 @@ let writeQueue = Promise.resolve();
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`);
-<<<<<<< HEAD
     const eventIdMatch = url.pathname.match(/^\/api\/events\/([^/]+)$/);
-=======
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 
     if (url.pathname === "/api/events" && request.method === "GET") {
       const events = await getEvents();
@@ -39,11 +36,7 @@ const server = http.createServer(async (request, response) => {
       const title = typeof body.title === "string" ? body.title.trim() : "";
       const description =
         typeof body.description === "string" ? body.description.trim() : "";
-<<<<<<< HEAD
       const scheduledAt = normalizeScheduledAt(body.date);
-=======
-      const date = normalizeDate(body.date);
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 
       if (!title || !description) {
         return sendJson(response, 400, {
@@ -58,13 +51,9 @@ const server = http.createServer(async (request, response) => {
           id: randomUUID(),
           title,
           description,
-<<<<<<< HEAD
           scheduledAt,
           completed: false,
           completedAt: null,
-=======
-          date,
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
           createdAt: new Date().toISOString(),
         });
 
@@ -74,7 +63,6 @@ const server = http.createServer(async (request, response) => {
       return sendJson(response, 201, { events });
     }
 
-<<<<<<< HEAD
     if (eventIdMatch && request.method === "PATCH") {
       const body = await readJsonBody(request);
       const eventId = decodeURIComponent(eventIdMatch[1]);
@@ -121,15 +109,12 @@ const server = http.createServer(async (request, response) => {
       return sendJson(response, 200, { events });
     }
 
-=======
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
     if (request.method === "GET") {
       return serveStaticFile(url.pathname, response);
     }
 
     sendJson(response, 405, { error: "Metodo non supportato." });
   } catch (error) {
-<<<<<<< HEAD
     if (error.message === "NOT_FOUND") {
       return sendJson(response, 404, {
         error: "Evento non trovato.",
@@ -142,8 +127,6 @@ const server = http.createServer(async (request, response) => {
       });
     }
 
-=======
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
     sendJson(response, 500, {
       error: "Errore interno del server.",
       details: error.message,
@@ -206,7 +189,6 @@ function purgeExpiredEvents(events) {
   const todayKey = formatDateKey(today);
 
   return events.filter((event) => {
-<<<<<<< HEAD
     const scheduledAt = normalizeScheduledAt(event.scheduledAt || event.date);
 
     if (!scheduledAt) {
@@ -214,13 +196,6 @@ function purgeExpiredEvents(events) {
     }
 
     return getEventDayKey(scheduledAt) >= todayKey;
-=======
-    if (!event.date) {
-      return true;
-    }
-
-    return event.date >= todayKey;
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
   });
 }
 
@@ -232,11 +207,7 @@ function formatDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
-<<<<<<< HEAD
 function normalizeScheduledAt(value) {
-=======
-function normalizeDate(value) {
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
   if (!value) {
     return null;
   }
@@ -245,7 +216,6 @@ function normalizeDate(value) {
     return null;
   }
 
-<<<<<<< HEAD
   const trimmed = value.trim();
 
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
@@ -261,9 +231,6 @@ function normalizeDate(value) {
 
 function getEventDayKey(scheduledAt) {
   return scheduledAt.slice(0, 10);
-=======
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
->>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 }
 
 async function readJsonBody(request) {
