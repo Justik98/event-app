@@ -4,8 +4,12 @@
     "title": "test",
     "description": "test desc",
     "date": "2026-03-18",
+<<<<<<< HEAD
     "createdAt": "2026-03-18T11:42:45.443Z",
     "completed": false,
     "completedAt": null
+=======
+    "createdAt": "2026-03-18T11:42:45.443Z"
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
   }
 ]

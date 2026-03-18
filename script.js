@@ -2,7 +2,10 @@ const form = document.querySelector("#event-form");
 const titleInput = document.querySelector("#title");
 const descriptionInput = document.querySelector("#description");
 const dateInput = document.querySelector("#date");
+<<<<<<< HEAD
 const datePreview = document.querySelector("#date-preview");
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 const eventList = document.querySelector("#event-list");
 const emptyState = document.querySelector("#empty-state");
 const eventCounter = document.querySelector("#event-counter");
@@ -12,9 +15,12 @@ let events = [];
 
 bootstrap();
 registerServiceWorker();
+<<<<<<< HEAD
 syncDatePreview();
 
 dateInput.addEventListener("input", syncDatePreview);
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -59,6 +65,7 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+<<<<<<< HEAD
 eventList.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
 
@@ -82,6 +89,8 @@ eventList.addEventListener("click", async (event) => {
   }
 });
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 async function bootstrap() {
   setFeedback("Caricamento eventi...", "info");
 
@@ -117,6 +126,7 @@ function renderEvents() {
 
   for (const item of events) {
     const listItem = document.createElement("li");
+<<<<<<< HEAD
     listItem.className = item.completed ? "event-card is-completed" : "event-card";
 
     const scheduledAt = item.scheduledAt || item.date;
@@ -128,10 +138,17 @@ function renderEvents() {
       : `<span class="event-status event-status-open">Da fare</span>`;
     const completedMarkup = item.completed && item.completedAt
       ? `<p class="event-completed-at">Completata il ${formatCreatedAt(item.completedAt)}</p>`
+=======
+    listItem.className = "event-card";
+
+    const dateMarkup = item.date
+      ? `<span class="event-date">${formatEventDate(item.date)}</span>`
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
       : "";
 
     listItem.innerHTML = `
       <div class="event-meta">
+<<<<<<< HEAD
         <div class="event-heading">
           <h3>${escapeHtml(item.title)}</h3>
           <div class="event-badges">
@@ -162,6 +179,13 @@ function renderEvents() {
       <p class="event-description">${escapeHtml(item.description)}</p>
       <p class="event-created-at">Creato il ${formatCreatedAt(item.createdAt)}</p>
       ${completedMarkup}
+=======
+        <h3>${escapeHtml(item.title)}</h3>
+        ${dateMarkup}
+      </div>
+      <p class="event-description">${escapeHtml(item.description)}</p>
+      <p class="event-created-at">Creato il ${formatCreatedAt(item.createdAt)}</p>
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
     `;
 
     eventList.appendChild(listItem);
@@ -174,6 +198,7 @@ function setFeedback(message, tone) {
 }
 
 function formatEventDate(dateValue) {
+<<<<<<< HEAD
   const hasTime = dateValue.includes("T");
   const normalizedValue = hasTime ? dateValue : `${dateValue}T12:00`;
 
@@ -192,6 +217,11 @@ function syncDatePreview() {
 
   datePreview.textContent = formatEventDate(dateInput.value);
   datePreview.dataset.active = "true";
+=======
+  return new Intl.DateTimeFormat("it-IT", {
+    dateStyle: "long",
+  }).format(new Date(`${dateValue}T12:00:00`));
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 }
 
 function formatCreatedAt(dateValue) {
@@ -223,6 +253,7 @@ function registerServiceWorker() {
     }
   });
 }
+<<<<<<< HEAD
 
 async function updateEventStatus(id, completed) {
   setFeedback("Aggiornamento evento...", "info");
@@ -269,3 +300,5 @@ async function deleteEvent(id) {
     setFeedback(error.message || "Errore durante l'eliminazione.", "error");
   }
 }
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a

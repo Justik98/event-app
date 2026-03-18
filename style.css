@@ -95,12 +95,15 @@ body {
   font-weight: 700;
 }
 
+<<<<<<< HEAD
 .field-hint {
   font-size: 0.88rem;
   font-weight: 400;
   color: var(--muted);
 }
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 .event-form input,
 .event-form textarea {
   width: 100%;
@@ -116,6 +119,7 @@ body {
   -webkit-appearance: none;
 }
 
+<<<<<<< HEAD
 .datetime-field {
   position: relative;
   display: block;
@@ -177,6 +181,8 @@ body {
   background: rgba(201, 111, 59, 0.12);
 }
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 .event-form input:focus,
 .event-form textarea:focus {
   outline: 2px solid rgba(201, 111, 59, 0.35);
@@ -253,6 +259,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+<<<<<<< HEAD
   align-items: flex-start;
   justify-content: space-between;
 }
@@ -262,17 +269,26 @@ body {
   gap: 8px;
 }
 
+=======
+  align-items: center;
+  justify-content: space-between;
+}
+
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 .event-card h3 {
   margin: 0;
   font-size: 1.15rem;
 }
 
+<<<<<<< HEAD
 .event-badges {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 .event-date {
   display: inline-flex;
   align-items: center;
@@ -283,6 +299,7 @@ body {
   background: rgba(201, 111, 59, 0.12);
 }
 
+<<<<<<< HEAD
 .event-status {
   display: inline-flex;
   align-items: center;
@@ -326,6 +343,8 @@ body {
   background: rgba(255, 241, 241, 0.92);
 }
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 .event-description {
   margin: 12px 0 0;
   line-height: 1.55;
@@ -338,6 +357,7 @@ body {
   color: rgba(111, 91, 75, 0.82);
 }
 
+<<<<<<< HEAD
 .event-completed-at {
   margin: 8px 0 0;
   font-size: 0.85rem;
@@ -353,6 +373,8 @@ body {
   opacity: 0.72;
 }
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 @media (max-width: 720px) {
   .app-shell {
     width: min(100% - 20px, 1080px);
@@ -388,6 +410,7 @@ body {
   .event-card {
     padding: 16px;
   }
+<<<<<<< HEAD
 
   .event-actions {
     width: 100%;
@@ -396,6 +419,8 @@ body {
   .card-action {
     flex: 1 1 180px;
   }
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
 }
 
 @media (max-width: 480px) {
@@ -428,10 +453,13 @@ body {
     font-size: 0.98rem;
   }
 
+<<<<<<< HEAD
   .datetime-field input {
     padding-left: 52px;
   }
 
+=======
+>>>>>>> d0d96dcf53324e79ed9111837458198c268f293a
   .event-date {
     font-size: 0.82rem;
   }
