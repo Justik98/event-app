@@ -150,14 +150,15 @@ async function getEvents() {
 }
 
 async function updateEvents(transform) {
-  writeQueue = writeQueue.then(async () => {
+  const nextWrite = writeQueue.then(async () => {
     const currentEvents = await readEventsFromFile();
     const nextEvents = transform(currentEvents);
     await writeEventsToFile(nextEvents);
     return nextEvents;
   });
 
-  return writeQueue;
+  writeQueue = nextWrite.catch(() => undefined);
+  return nextWrite;
 }
 
 async function readEventsFromFile() {

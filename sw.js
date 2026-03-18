@@ -1,4 +1,4 @@
-const CACHE_NAME = "eventi-app-v1";
+const CACHE_NAME = "eventi-app-v2";
 const APP_ASSETS = [
   "/",
   "/index.html",
