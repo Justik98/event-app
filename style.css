@@ -95,6 +95,12 @@ body {
   font-weight: 700;
 }
 
+.field-hint {
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
 .event-form input,
 .event-form textarea {
   width: 100%;
@@ -108,6 +114,67 @@ body {
   background: var(--panel-strong);
   appearance: none;
   -webkit-appearance: none;
+}
+
+.datetime-field {
+  position: relative;
+  display: block;
+}
+
+.datetime-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fffaf5;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  pointer-events: none;
+}
+
+.datetime-field input {
+  padding-left: 56px;
+  padding-right: 18px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(249, 242, 233, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    0 10px 22px rgba(157, 79, 33, 0.08);
+}
+
+.datetime-field input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.date-preview {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: rgba(111, 91, 75, 0.08);
+}
+
+.date-preview[data-active="true"] {
+  color: var(--accent-dark);
+  background: rgba(201, 111, 59, 0.12);
 }
 
 .event-form input:focus,
@@ -186,13 +253,24 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+}
+
+.event-heading {
+  display: grid;
+  gap: 8px;
 }
 
 .event-card h3 {
   margin: 0;
   font-size: 1.15rem;
+}
+
+.event-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .event-date {
@@ -205,6 +283,49 @@ body {
   background: rgba(201, 111, 59, 0.12);
 }
 
+.event-status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.event-status-open {
+  color: #9e4f21;
+  background: rgba(211, 130, 76, 0.14);
+}
+
+.event-status-done {
+  color: #2f6d44;
+  background: rgba(47, 109, 68, 0.12);
+}
+
+.event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.card-action {
+  min-height: 42px;
+  border: 1px solid rgba(92, 70, 52, 0.16);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 0.94rem;
+  color: var(--text);
+  background: var(--panel-strong);
+  cursor: pointer;
+}
+
+.card-action-danger {
+  color: #8b2c2c;
+  border-color: rgba(139, 44, 44, 0.18);
+  background: rgba(255, 241, 241, 0.92);
+}
+
 .event-description {
   margin: 12px 0 0;
   line-height: 1.55;
@@ -215,6 +336,21 @@ body {
   margin: 14px 0 0;
   font-size: 0.85rem;
   color: rgba(111, 91, 75, 0.82);
+}
+
+.event-completed-at {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: #2f6d44;
+}
+
+.event-card.is-completed {
+  background: rgba(247, 255, 249, 0.88);
+}
+
+.event-card.is-completed .event-description,
+.event-card.is-completed h3 {
+  opacity: 0.72;
 }
 
 @media (max-width: 720px) {
@@ -252,6 +388,14 @@ body {
   .event-card {
     padding: 16px;
   }
+
+  .event-actions {
+    width: 100%;
+  }
+
+  .card-action {
+    flex: 1 1 180px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -282,6 +426,10 @@ body {
 
   .event-form label {
     font-size: 0.98rem;
+  }
+
+  .datetime-field input {
+    padding-left: 52px;
   }
 
   .event-date {

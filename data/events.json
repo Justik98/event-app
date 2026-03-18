@@ -4,6 +4,8 @@
     "title": "test",
     "description": "test desc",
     "date": "2026-03-18",
-    "createdAt": "2026-03-18T11:42:45.443Z"
+    "createdAt": "2026-03-18T11:42:45.443Z",
+    "completed": false,
+    "completedAt": null
   }
 ]

@@ -24,6 +24,7 @@ let writeQueue = Promise.resolve();
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`);
+    const eventIdMatch = url.pathname.match(/^\/api\/events\/([^/]+)$/);
 
     if (url.pathname === "/api/events" && request.method === "GET") {
       const events = await getEvents();
@@ -35,7 +36,7 @@ const server = http.createServer(async (request, response) => {
       const title = typeof body.title === "string" ? body.title.trim() : "";
       const description =
         typeof body.description === "string" ? body.description.trim() : "";
-      const date = normalizeDate(body.date);
+      const scheduledAt = normalizeScheduledAt(body.date);
 
       if (!title || !description) {
         return sendJson(response, 400, {
@@ -50,7 +51,9 @@ const server = http.createServer(async (request, response) => {
           id: randomUUID(),
           title,
           description,
-          date,
+          scheduledAt,
+          completed: false,
+          completedAt: null,
           createdAt: new Date().toISOString(),
         });
 
@@ -60,12 +63,70 @@ const server = http.createServer(async (request, response) => {
       return sendJson(response, 201, { events });
     }
 
+    if (eventIdMatch && request.method === "PATCH") {
+      const body = await readJsonBody(request);
+      const eventId = decodeURIComponent(eventIdMatch[1]);
+
+      const events = await updateEvents((currentEvents) => {
+        const nextEvents = purgeExpiredEvents(currentEvents);
+        const eventIndex = nextEvents.findIndex((item) => item.id === eventId);
+
+        if (eventIndex === -1) {
+          throw new Error("NOT_FOUND");
+        }
+
+        const currentEvent = nextEvents[eventIndex];
+        const completed = body.completed === undefined
+          ? !currentEvent.completed
+          : Boolean(body.completed);
+
+        nextEvents[eventIndex] = {
+          ...currentEvent,
+          completed,
+          completedAt: completed ? new Date().toISOString() : null,
+        };
+
+        return nextEvents;
+      });
+
+      return sendJson(response, 200, { events });
+    }
+
+    if (eventIdMatch && request.method === "DELETE") {
+      const eventId = decodeURIComponent(eventIdMatch[1]);
+
+      const events = await updateEvents((currentEvents) => {
+        const nextEvents = purgeExpiredEvents(currentEvents);
+        const filteredEvents = nextEvents.filter((item) => item.id !== eventId);
+
+        if (filteredEvents.length === nextEvents.length) {
+          throw new Error("NOT_FOUND");
+        }
+
+        return filteredEvents;
+      });
+
+      return sendJson(response, 200, { events });
+    }
+
     if (request.method === "GET") {
       return serveStaticFile(url.pathname, response);
     }
 
     sendJson(response, 405, { error: "Metodo non supportato." });
   } catch (error) {
+    if (error.message === "NOT_FOUND") {
+      return sendJson(response, 404, {
+        error: "Evento non trovato.",
+      });
+    }
+
+    if (error instanceof SyntaxError) {
+      return sendJson(response, 400, {
+        error: "Corpo della richiesta non valido.",
+      });
+    }
+
     sendJson(response, 500, {
       error: "Errore interno del server.",
       details: error.message,
@@ -128,11 +189,13 @@ function purgeExpiredEvents(events) {
   const todayKey = formatDateKey(today);
 
   return events.filter((event) => {
-    if (!event.date) {
+    const scheduledAt = normalizeScheduledAt(event.scheduledAt || event.date);
+
+    if (!scheduledAt) {
       return true;
     }
 
-    return event.date >= todayKey;
+    return getEventDayKey(scheduledAt) >= todayKey;
   });
 }
 
@@ -144,7 +207,7 @@ function formatDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
-function normalizeDate(value) {
+function normalizeScheduledAt(value) {
   if (!value) {
     return null;
   }
@@ -153,7 +216,21 @@ function normalizeDate(value) {
     return null;
   }
 
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
+  const trimmed = value.trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return trimmed;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(trimmed)) {
+    return trimmed;
+  }
+
+  return null;
+}
+
+function getEventDayKey(scheduledAt) {
+  return scheduledAt.slice(0, 10);
 }
 
 async function readJsonBody(request) {
